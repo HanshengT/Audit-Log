@@ -1,0 +1,109 @@
+swagger: '2.0'
+info:
+  description: This is an API for humidity and temperature report
+  version: 1.0.0
+  title: humidity and temperature API
+
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+paths:
+  /rr/offset:
+    get:
+      summary: gets events stats for renting request
+      operationId: app.get_rr_offset
+      description: Gets reading stats
+      produces:
+      - application/json
+      parameters:
+        - in: query
+          name: offset
+          description: pass an optional search int for looking up the event
+          required: false
+          type: integer
+      responses:
+        200:
+          description: current stats
+          schema:
+              $ref: '#/definitions/rrReading'
+        400:
+          description: stats do not exist
+
+  /cbs/offset:
+    get:
+      summary: gets events stats for charging box status
+      operationId: app.get_cbs_offset
+      description: Gets reading stats
+      produces:
+      - application/json
+      parameters:
+        - in: query
+          name: offset
+          description: pass an optional search int for looking up the event
+          required: false
+          type: integer
+      responses:
+        200:
+          description: current stats
+          schema:
+              $ref: '#/definitions/cbsReading'
+        400:
+          description: stats do not exist
+
+definitions:
+  rrReading:
+    type: object
+    required:
+    - user_id
+    - user_device_id
+    - charging_box_id
+    - timestamp
+    properties:
+      user_id:
+        type: integer
+        example: 100000001
+      user_device_id:
+        type: integer
+        example: 345480745
+      charging_box_id:
+        type: string
+        example: A-000001
+      timestamp:
+        type: string
+        format: date-time
+        example: 2016-08-29T09:12:33.001Z
+
+
+  cbsReading:
+    type: object
+    required:
+    - charging_box_id
+    - power_banks_remain
+    - power_bank_status
+    - timestamp
+    properties:
+      charging_box_id:
+        type: string
+        example: A-000001
+      power_banks_remain:
+        type: integer
+        example: 6
+      power_bank_status:
+        $ref: '#/definitions/PowerBankStatus'
+      timestamp:
+        type: string
+        format: date-time
+        example: 2016-08-29T09:12:33.001Z
+
+  PowerBankStatus:
+    required:
+    - power_bank_id
+    - battery_level
+    properties:
+      power_bank_id:
+        type: string
+        example: a-000a0f
+      battery_level:
+        type: integer
+        example: 80
